@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <title>Shout | Console</title>
+        <meta name="author" content="Shout">
+        <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
+        <link rel="icon" href="images/favicon.ico">
+        <script src="http://maps.googleapis.com/maps/api/js?sensor=true&libraries=places"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/jquery.hotkeys-0.7.9.min.js"></script>
+        <script src="js/jquery.cookie.js"></script>
+        <script src="js/init.js"></script>
+        <script type="text/javascript">
+            google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+    </head>
+    <body>
+        <div id="popDiv" class="ontop"></div>
+        <div id="popImg" class="popup"><img src="images/pleasewait.gif" /></div>
+
+        <div id="flagDiv" style="display:none;float:left;clear:both;z-index:1001;width:25%;min-width:350px;height:700px;position: absolute;background-color: transparent;top:50px;">
+            <div style="border-style: outset;border-width:5px;border-color:#0C9;padding:10px 10px;border-radius:10px;width:100%;height:100%;display:block;float:left;clear:left;text-align:center;background-color:white;">
+                <div style="display:block;float:left;clear:left;text-align:center;width:100%;height:20%;overflow:auto;">
+                    <img style="text-align:center;vertical-align: middle;height:40px;width:40px;border-radius:150px;" src="images/flag.png"/>
+                    <h2 style="vertical-align: middle;text-align:center;">Review Spam</h2>
+                </div>
+                <div style="display:block;float:left;clear:both;overflow:auto;height:80%;width:100%;">
+                    <div id="flag_list" style="display:block;float:left;clear:left;text-align:center;width:100%;height:100%;">
+                        <img id="flag_load" style="text-align:center;vertical-align: middle;width:50px;height:50px;cursor:pointer;" src="images/refresh.png"/><br><p style="text-align:center;font-size:1.5em;">Click to Load Flagged Shouts..</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="notificationDiv" style="display:none;float:left;clear:left;z-index:1002;width:25%;min-width:350px;height:700px;position: absolute;background-color: transparent;top:50px;">
+            <div style="border-style: outset;border-width:5px;border-color:#0C9;padding:10px 10px;border-radius:10px;width:100%;height:100%;display:block;float:left;clear:left;text-align:center;background-color:white;">
+                <div style="display:block;float:left;clear:left;text-align:center;width:100%;height:20%;overflow:auto;">
+                    <img style="text-align:center;vertical-align: middle;height:40px;width:40px;border-radius:150px;" src="images/notification.png"/>
+                    <h2 style="vertical-align: middle;text-align:center;">Notifications</h2>
+                </div>
+                <div style="display:block;float:left;clear:left;overflow:auto;height:80%;width:100%;">
+                    <div id="notification_list" style="display:block;float:left;clear:left;text-align:center;width:100%;height:100%;">
+                        <img id="notification_load" style="text-align:center;vertical-align: middle;" src="images/loading.gif"/><br><p style="text-align:center;font-size:1.5em;">Loading Notifications..</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="echoDiv" style="opacity:0.8;display:none;float:left;clear:left;z-index:1003;width:25%;min-width:350px;min-height:350px;height:25%;position: absolute;background-color:white;top:25%;left:50%;">
+            <div class="closeDiv" style="display:block;float:right;"><img src="images/cross.png" /></div>
+            <div style="display:block;float:left;clear:left;overflow:auto;height:80%;width:100%;">
+                <div id="echo_list" style="display:block;float:left;clear:left;text-align:center;width:100%;height:100%;">
+                    <img id="echo_load" style="text-align:center;vertical-align: middle;" src="images/loading.gif"/><br><p style="text-align:center;font-size:1.5em;">Loading Users Echoed..</p>
+                </div>
+            </div>
+        </div>
+        <div id="shutupDiv" style="opacity:0.8;display:none;float:left;clear:left;z-index:1004;width:25%;min-width:350px;min-height:350px;height:25%;position: absolute;background-color:white;top:25%;left:50%;">
+            <div class="closeDiv" style="display:block;float:right;"><img src="images/cross.png" /></div>
+            <div style="display:block;float:left;clear:left;overflow:auto;height:80%;width:100%;">
+                <div id="shutup_list" style="display:block;float:left;clear:left;text-align:center;width:100%;height:100%;">
+                    <img id="shutup_load" style="text-align:center;vertical-align: middle;" src="images/loading.gif"/><br><p style="text-align:center;font-size:1.5em;">Loading Users Shutuped..</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="scroller_anchor"></div>
+        <div id="scroller" class="menu" >
+
+            <div style="display:block;text-align:center;float:left;clear:left;height:50px;width:300px;"><a href="http://backend.shouuut.com/lite"><p style="display:block;float:left;padding:5px;horizontal-align:center;font-family: helvetica bold;color:#00cc99;height:20px;font-size:1.5em;margin-left:10px;margin-top:5px;width:200px;"><strong>C O N S O L E</strong></p></a></div>
+
+            <ul style="display:block;float:left;height:50px;width:auto;">
+                <li id="user_show"><a href="#" id="current" style="text-align:center;"><div style="display:block;float:left;width:auto;height:40px;"><img style="width:35px;height:35px;margin:5px 5px;" src="images/user_circle.png"/></div><div style="display:block;float:left;width:auto;height:40px;">Switch User</div></a>
+                    <ul id="user_switch">
+                        <li><a href="#">Shout User</a></li>
+                    </ul>
+                </li>
+                <li id="ae_show"><a href="#" id="currentae" style="text-align:center;"><div style="display:block;float:left;width:auto;height:40px;"><img style="width:35px;height:35px;margin:5px 5px;" src="images/ae_circle.png"/></div><div style="display:block;float:left;width:auto;height:40px;">Alter-Ego</div></a>
+                    <ul id="ae_switch">
+                        <li><a href="#">Alter-Ego User</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+
+            <ul style="display:block;float:right;height:50px;">
+                <li id="location"><a href="#"><img style="display:block;overflow:hidden;width:45px;height:45px;" src="images/location.png"></a>
+                    <ul>
+                        <li id="wws"><a href="#">World Wide Shout</a></li>
+                        <li id="blore"><a href="#">Bangalore</a></li>
+                        <li id="mumbai"><a href="#">Mumbai</a></li>
+                        <li id="chennai"><a href="#">Chennai</a></li>
+                        <li id="delhi"><a href="#">Delhi</a></li>
+                    </ul>
+                </li>
+                <li id="notification"><a href="#"><img style="display:block;width:50px;height:50px;" src="images/notification.png" /></a></li>
+                <li id="flag"><a href="#"><img style="display:block;width:50px;height:50px;" src="images/flag.png"></a></li>
+                <!--<li id="relogin"><a href="#"><img style="display:block;width:50px;height:50px;" src="images/relogin.png" /></a></li>-->
+            </ul>
+        </div>
+        <div id="main" style="width:100%;height:80%;">
+            <input id="pac-input" class="controls" type="text" placeholder="Where to Shout">
+            <div id="shout_list">
+                <div style="display:inline-block;float:left;text-align:center;width:100%;height:auto;">
+                    <img style="text-align:center;vertical-align: middle;height:45px;width:45px;border-radius:150px;" src="images/favicon.png"/>
+                    <h2 style="vertical-align: middle;text-align:center;">Be Heard</h2>
+                </div>
+                <div style="display:block;float:left;clear:left;overflow:auto;height:550px;width:100%">
+                    <div id="list" style="display:block;float:left;clear:left;text-align:center;width:100%;height:100%;">
+                        <div style="text-align:center;display:block;float:left;clear:left;width:100%;height:80%;top:50%;left:50%;">
+                            <img class="refresh_list" style="text-align:center;vertical-align: middle;margin-top:25%;" src="images/loading.gif"/><br><p style="text-align:center;font-size:1.5em;">Fetching Shouts..</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="animation_image" style="display:block;text-align:center;cursor:pointer;float:right;width:100%;" align="center">
+                    <img style="top:50%;left:50%;horizontal-align:middle;text-align:center;" src="images/viewmore.png">
+                </div>
+            </div>
+            <div id="map">
+            </div>
+        </div>
+        <p style="text-align:center;color:#ffffff;">63 Idea Labs ©2014</p>
+    </body>
+</html>
